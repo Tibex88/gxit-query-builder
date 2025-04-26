@@ -1,11 +1,25 @@
-FROM node:20.15.0-alpine
-WORKDIR /usr/server/app
+# --------- Stage 1: Build ---------
+FROM node:20.15.0-alpine AS builder
 
-EXPOSE 5173
+WORKDIR /usr/src/app
 
-COPY ./package.json ./
+COPY package.json package-lock.json ./
 RUN npm install
-COPY ./ .
+
+COPY . .
 RUN npm run build
-ENV NODE_ENV=production
-CMD ["npm", "run", "preview"]
+
+# --------- Stage 2: Serve using vite preview ---------
+FROM node:20.15.0-alpine
+
+WORKDIR /usr/src/app
+
+# Only copy built files and necessary dependencies
+COPY --from=builder /usr/src/app /usr/src/app
+
+RUN npm install
+
+EXPOSE 4173
+
+# Use vite preview instead of nginx
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
