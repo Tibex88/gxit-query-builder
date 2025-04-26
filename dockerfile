@@ -9,17 +9,15 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# --------- Stage 2: Serve using vite preview ---------
-FROM node:20.15.0-alpine
+# --------- Stage 2: Serve with Nginx ---------
+FROM nginx:alpine
 
-WORKDIR /usr/src/app
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Only copy built files and necessary dependencies
-COPY --from=builder /usr/src/app /usr/src/app
-
-RUN npm install
+# Copy built files to nginx html folder
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
 EXPOSE 4173
 
-# Use vite preview instead of nginx
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+CMD ["nginx", "-g", "daemon off;"]
