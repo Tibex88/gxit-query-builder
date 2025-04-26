@@ -4,7 +4,7 @@ start:
 # Variables
 IMAGE_NAME = gxit-query-builder
 CONTAINER_NAME = GXITQB
-PORT = 5173
+PORT = 4173
 
 # Default target
 .PHONY: help

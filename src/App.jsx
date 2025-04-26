@@ -9,7 +9,6 @@ import '@yisehak-awm/query-builder/dist/index.min.css'
 function App() {
 
   return (
-    // <div>
     <ReactFlowProvider>
       <QueryBuilderContext.Provider
         value={{
@@ -23,7 +22,6 @@ function App() {
         <QueryBuilder nodes={[]} edges={[]} onSubmit={() => {}} />
       </QueryBuilderContext.Provider>
     </ReactFlowProvider>
-    // </div>
   )
 }
 
