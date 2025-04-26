@@ -37,4 +37,8 @@ stop:
 clean: stop
 	docker rmi $(IMAGE_NAME) || true
 
-.PHONY: build run dev stop clean
+# Open bash inside the running container
+bash:
+	docker exec -it $(CONTAINER_NAME) sh
+
+.PHONY: build run dev stop clean bash
