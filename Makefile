@@ -18,7 +18,7 @@ help:
 
 # Build the Docker image
 build:
-	docker build -t $(IMAGE_NAME) .
+	docker build --no-cache -t $(IMAGE_NAME) .
 
 # Run the container in foreground
 run:
