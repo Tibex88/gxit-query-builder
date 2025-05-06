@@ -1,10 +1,10 @@
-import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
 import classes  from './config/style'
-import { nodeDefinitions, edgeDefinitions } from "./config/schema"
 import formFields from './config/form'
 import { ReactFlowProvider } from "@xyflow/react";
+import { nodeDefinitions, edgeDefinitions } from "./config/schema"
+import Icons from './config/icons';
 import '@yisehak-awm/query-builder/dist/index.min.css'
-
+import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
 
 function App() {
 
@@ -16,7 +16,7 @@ function App() {
           nodeDefinitions,
           edgeDefinitions,
           forms: formFields,
-          icons: Icon,
+          icons: Icons,
         }}
       >
         <QueryBuilder nodes={[]} edges={[]} onSubmit={() => {}} />
