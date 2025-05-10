@@ -28,20 +28,20 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../components/ui/popover";
+} from "@/components/ui/popover";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../components/ui/accordion";
+} from "@/components/ui/accordion";
 import Node, { AvailableConnection, CustomNodeProps, Icon } from "./node";
 import { AlertCircle, Play, Plus } from "lucide-react";
-import { Toaster } from "../components/ui/sonner";
-import { Button } from "../components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
 import Edge, { CustomEdgeProps } from "./edge";
 import deepDiff from "deep-diff";
-import add from "./add.svg";
+// import add from "./add.svg";
 
 import ELK from "elkjs";
 import { QueryBuilderContext } from "./context";
@@ -378,7 +378,7 @@ function Instructions() {
   return (
     <div className="absolute z-10 flex h-full w-full items-center justify-center">
       <div className="flex w-1/3 flex-col items-center text-center">
-        <img src={add as any} className="h-72 w-72 dark:invert-[0.95]" />
+        {/* <img src={add as any} className="h-72 w-72 dark:invert-[0.95]" /> */}
         <h2 className="mb-4 text-xl font-bold text-foreground/70">
           Start by adding a node
         </h2>

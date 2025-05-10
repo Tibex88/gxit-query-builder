@@ -20,17 +20,17 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "../components/ui/context-menu";
+} from "@/components/ui/context-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../components/ui/popover";
-import { Combobox, ComboboxOption } from "../components/ui/combobox";
+} from "@/components/ui/popover";
+import { Combobox, ComboboxOption } from "@/components/ui/combobox";
 import { ArrowLeft, ArrowRight, Trash } from "lucide-react";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Button } from "../components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { QueryBuilderContext } from "./context";
 import { createAvatar } from "@dicebear/core";
 import { identicon } from "@dicebear/collection";
