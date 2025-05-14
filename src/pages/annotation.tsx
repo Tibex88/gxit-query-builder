@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnnotationDataContext } from '../context';
-import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { Annotation, AnnotationContextMenu } from "./../action";
 import { ArrowLeft } from "lucide-react";
 import Tabs from "./../tabs";
@@ -12,7 +12,13 @@ export function AnnotationC() {
 
   const AnnotationDataProvider = AnnotationDataContext.Provider;
   const annotation: Annotation = useLoaderData();
+  
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get base path dynamically
+  const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
+  const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
 
   return (
     <>
@@ -22,12 +28,12 @@ export function AnnotationC() {
         <div className="flex h-screen flex-col">
           <header className="flex items-center justify-between px-12 pt-4">
             <h1 className="red text-xl font-bold">
-              {/* <a
+              <a
                 className="me-2 hover:cursor-pointer"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate(basePath)}
               >
                 <ArrowLeft className="me-2 inline" />
-              </a> */}
+              </a>
               {annotation.title || annotation.annotation_id}
             </h1>
             <AnnotationContextMenu annotation={annotation} />
@@ -36,11 +42,11 @@ export function AnnotationC() {
             tabs={[
               {
                 label: "Query",
-                href: `/annotation/${annotation.annotation_id}/params`,
+                href: `params`,
               },
               {
                 label: "Result",
-                href: `/annotation/${annotation.annotation_id}/results`,
+                href: `results`,
               },
             ]}
           />

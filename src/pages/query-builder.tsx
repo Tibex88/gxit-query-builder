@@ -8,10 +8,12 @@ import { useRunQuery } from '../action';
 
 import '@yisehak-awm/query-builder/dist/index.min.css'
 import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
+import { Outlet } from 'react-router-dom';
 
 export function QB() {
 
   const { runQuery, busy } = useRunQuery();
+  const isRootPath = !location.pathname.includes("/annotation/");
 
   return (
     <ReactFlowProvider>
@@ -23,7 +25,11 @@ export function QB() {
           forms: formFields,
           icons: Icons,
         }}>
-        <QueryBuilder busy={busy} nodes={[]} edges={[]} onSubmit={runQuery} />
+        {isRootPath ? (
+          <QueryBuilder busy={busy} nodes={[]} edges={[]} onSubmit={runQuery} />
+        ) : (
+          <Outlet />
+        )}
       </QueryBuilderContext.Provider>
     </ReactFlowProvider>
   )

@@ -13,37 +13,37 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/interactivetool/ep/:id1/:id2",
     element: <QB />,
-  },
-  {
-    path: "annotation/:id",
-    element: <AnnotationC />,
-    loader: async ({ request, params }) => {
-      const url = new URL(request.url);
-      if (url.pathname === `/annotation/${params.id}`) {
-        return redirect(`/annotation`);
-      }
-
-      // const user = await authenticator.isAuthenticated(request);
-      // console.log({user})
-      const headers = { Authorization: `Bearer ${token}` };
-      const annotation = await annotationAPI
-        .get(`annotation/${params.id}`, { headers })
-        .json();
-      return annotation;
-    },
     children: [
       {
-        index: true,
-        path: "results",
-        element: <Result />,
-      },
-      {
-        path: "params",
-        element: <Param />,
+        path: "annotation/:id",
+        element: <AnnotationC />,
+        loader: async ({ request, params }) => {
+          const url = new URL(request.url);
+          if (url.pathname === `/annotation/${params.id}`) {
+            return redirect(`/annotation`);
+          }
+
+          const headers = { Authorization: `Bearer ${token}` };
+          const annotation = await annotationAPI
+            .get(`annotation/${params.id}`, { headers })
+            .json();
+          return annotation;
+        },
+        children: [
+          {
+            path: "results",
+            element: <Result />,
+          },
+          {
+            path: "params",
+            element: <Param />,
+          },
+        ],
       },
     ],
+
   },
 ]);
 

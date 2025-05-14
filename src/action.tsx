@@ -94,9 +94,7 @@ export function useRunQuery (id?: string) {
           .json();
           console.log({annotation_id})
           // annotation_id = `681f579bf8abe0ad25fa5baf`
-          navigate(`/annotation/${annotation_id}/results`, {
-        //   state: { reload: true },
-        });
+          navigate(`annotation/${annotation_id}/results`);
       } catch (e: any) {
         console.error(e);
         alert(`${e.response?.statusText}: ${e.response?.data}`);
