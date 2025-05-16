@@ -1,9 +1,17 @@
 import { useContext, useMemo } from "react";
 import { AnnotationDataContext } from "../context";
 // import QueryBuilder from "@/components/query-builder";
-import { QueryBuilder } from "../builder";
+import classes  from '../config/style'
+import formFields from '../config/form'
+import { nodeDefinitions, edgeDefinitions } from "../config/schema"
+import Icons from '../config/icons';
+
+
 import { useRunQuery } from "./../action";
-import { Edge, Node } from "@xyflow/react";
+import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
+import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
+
+import '@yisehak-awm/query-builder/dist/index.min.css'
 
 export function Param () {
   const annotation = useContext(AnnotationDataContext);
@@ -16,7 +24,7 @@ export function Param () {
         type: "custom",
         data: {
           id: n.id,
-          type: n.type,
+          qb_node_type: n.type,
           ...n.properties,
         },
         position: { x: 0, y: 0 },
@@ -42,6 +50,15 @@ export function Param () {
   if (typeof window == "undefined") return <></>;
 
   return (
+  <ReactFlowProvider>
+          <QueryBuilderContext.Provider
+        value={{
+          style: classes,
+          nodeDefinitions,
+          edgeDefinitions,
+          forms: formFields,
+          icons: Icons,
+        }}>
     <QueryBuilder
       busy={busy}
       onSubmit={runQuery}
@@ -52,5 +69,7 @@ export function Param () {
       
       previouslyRun={true}
     />
+        </QueryBuilderContext.Provider>
+    </ReactFlowProvider>
   );
 };

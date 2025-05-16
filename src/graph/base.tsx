@@ -7,6 +7,8 @@ import cytoscapePopper from "cytoscape-popper";
 import elk from "cytoscape-elk";
 import html2canvas from "html2canvas";
 import saver from "file-saver";
+import dagre from "cytoscape-dagre";
+
 import {
   Tooltip,
   TooltipContent,
@@ -20,6 +22,8 @@ import cytoscape, {
 cytoscape.use(cytoscapePopper(popperFactory));
 cytoscape.use(nodeHtmlLabel);
 cytoscape.use(elk);
+cytoscape.use(dagre);
+
 
 interface BaseCytoscapeGraphProps extends CytoscapeOptions {
   filters?: string[];
