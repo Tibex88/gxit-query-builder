@@ -27,6 +27,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Progress from "../graph/progress";
 
 export function Result () {
   const [cont, setCont] = useState<HTMLElement | null>(null);
@@ -46,15 +47,17 @@ export function Result () {
   }, []);
 
   const totalNonParentNodeCount = useMemo(
-    () =>
-      annotation?.nodes.filter((n: any) => n.data.type !== "parent").length ||
-      0,
+    () =>{
+      console.log({annotation})
+      annotation?.request?.nodes.filter((n: any) => n.type !== "parent").length ||
+      0},
     [annotation],
   );
 
   const onFilterChange = useCallback(
     (item: string) =>
       setFilteredTerms((items) => {
+      console.log({items})
         return items.includes(item)
           ? items.filter((i) => i !== item)
           : [...items, item];
@@ -72,9 +75,48 @@ export function Result () {
 
   // if we are reloading the page re-fetching the result, we do not want the previous result
   // to show up first. So we return an empty page as we load the result
-  // if (location?.state?.reload) return <></>;
+  if (location?.state?.reload) return <></>;
 
   if (!annotation) return <></>;
+
+  if (annotation.status === "PENDING" && !annotation.nodes) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div>
+          <h2 className="mb-4">Generating annotation result ...</h2>
+          <Progress />
+        </div>
+      </div>
+    );
+  }
+
+  if (annotation.status === "FAILED" && !annotation.nodes) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-destructive">
+          <AlertTriangle className="me-4 inline" /> Result could not be
+          generated.
+        </p>
+      </div>
+    );
+  }
+  if (!annotation.nodes.length) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="flex w-1/3 flex-col items-center">
+          {/* <img src={empty} className="h-72 w-72 dark:invert-[0.95]" /> */}
+          <h2 className="mb-4 text-xl font-bold text-foreground/70">
+            No matching results
+          </h2>
+          <p className="mb-8 text-center text-foreground/50">
+            Your query did not return any matching results. Please modify the
+            query and re-run it.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <>
@@ -86,14 +128,14 @@ export function Result () {
         onExplainNode={onExplainNode}
         filters={filters}
       >
-        <ResultSummary
+        {/* <ResultSummary
           wrapper={cont}
           summary={annotation.summary}
-          nodeTypeCounts={annotation.node_count_by_label}
-          edgeTypeCounts={annotation.edge_count_by_label}
-        />
+          nodeTypeCounts={annotation?.node_count_by_label}
+          edgeTypeCounts={annotation?.edge_count_by_label}
+        /> */}
       </AnnotationResultGraph>
-      <Legend
+      {/* <Legend
         filters={filters}
         onFilterToggle={onFilterChange}
         nodeTypeCounts={annotation.node_count_by_label}

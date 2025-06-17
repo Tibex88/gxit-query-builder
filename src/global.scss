@@ -1,6 +1,6 @@
 @import "@xyflow/react/dist/style.css";
 @import url("highcharts/css/highcharts.css");
-@import "./components/query-builder/style.scss";
+@import "style.scss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
 
 body {
@@ -210,7 +210,7 @@ ol.vertical-stepper {
 }
 
 .progress {
-  mask-image: url("/progress.svg");
+  mask-image: url("https://raw.githubusercontent.com/Tibex88/assets/refs/heads/main/progress.svg");
   mask-size: 6px 100%;
 }
 

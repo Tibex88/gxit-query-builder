@@ -1,0 +1,36 @@
+.animate-bounce-once {
+  animation-name: bounce;
+  animation-duration: 0.5s;
+  animation-iteration-count: 2;
+}
+
+@keyframes bounce {
+  100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  50% {
+    transform: translateY(-5%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.react-flow__handle {
+  @apply border-background bg-transparent;
+}
+
+.react-flow__background {
+  @apply bg-background;
+}
+
+.react-flow__controls button {
+  @apply border-border bg-background;
+}
+
+.qb-bg.dots {
+  @apply fill-foreground/10;
+}

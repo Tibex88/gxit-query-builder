@@ -138,7 +138,7 @@ export default ({ data, onExplainNode, ...otherProps }: any) => {
         elements={data.elements}
         style={STYLE}
         layout={LAYOUT}
-        NodePopup={ContextMenu}
+        // NodePopup={ContextMenu}
         {...otherProps}
       />
     </>

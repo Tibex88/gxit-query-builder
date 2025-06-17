@@ -4,17 +4,16 @@ import formFields from '../config/form'
 import { ReactFlowProvider } from "@xyflow/react";
 import { nodeDefinitions, edgeDefinitions } from "../config/schema"
 import Icons from '../config/icons';
-import { useRunQuery } from '../action';
+import { useRunQuery } from '../useRunQuery';
 
 import '@yisehak-awm/query-builder/dist/index.min.css'
 import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigation } from 'react-router-dom';
 
 export function QB() {
-
+  const navigation = useNavigation()
   const { runQuery, busy } = useRunQuery();
   const isRootPath = !location.pathname.includes("/annotation/");
-
   return (
     <ReactFlowProvider>
       <QueryBuilderContext.Provider
@@ -25,11 +24,16 @@ export function QB() {
           forms: formFields,
           icons: Icons,
         }}>
-        {isRootPath ? (
-          <QueryBuilder busy={busy} nodes={[]} edges={[]} onSubmit={runQuery} />
-        ) : (
-          <Outlet />
+          {isRootPath ? (
+            <>
+        {navigation.state === "loading" && (
+            <div className="glowing navigation-indicator absolute left-0 top-0 h-1 w-4/5 bg-foreground z-50"></div>
         )}
+            <QueryBuilder busy={busy} nodes={[]} edges={[]} onSubmit={runQuery} />
+          </>
+          ) : (
+            <Outlet />
+          )}
       </QueryBuilderContext.Provider>
     </ReactFlowProvider>
   )

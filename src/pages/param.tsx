@@ -1,13 +1,12 @@
 import { useContext, useMemo } from "react";
 import { AnnotationDataContext } from "../context";
-// import QueryBuilder from "@/components/query-builder";
 import classes  from '../config/style'
 import formFields from '../config/form'
 import { nodeDefinitions, edgeDefinitions } from "../config/schema"
 import Icons from '../config/icons';
 
 
-import { useRunQuery } from "./../action";
+import { useRunQuery } from "./../useRunQuery";
 import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
 import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-builder'
 
@@ -24,7 +23,7 @@ export function Param () {
         type: "custom",
         data: {
           id: n.id,
-          qb_node_type: n.type,
+          type: n.type,
           ...n.properties,
         },
         position: { x: 0, y: 0 },

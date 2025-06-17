@@ -1,30 +1,81 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnnotationDataContext } from '../context';
-import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useFetcher, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { Annotation, AnnotationContextMenu } from "./../action";
 import { ArrowLeft } from "lucide-react";
 import Tabs from "./../tabs";
 import { ReactFlowProvider } from '@xyflow/react';
+import { io, Socket } from "socket.io-client";
+import { annotationAPI } from '../api';
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NjcwNDYwMSwianRpIjoiOWY2NzRjZWQtZDgyNi00ZTFmLTgwNTYtNjEyMDg3NWE0MTExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc0NjcwNDYwMSwiY3NyZiI6IjMwMThhYTdjLTBlNDItNDg1MC1hNTMzLTllOGQ5MzQxNGFjYSIsImV4cCI6MTc1NTcwNDYwMSwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.asewhiLTXz32HgRurF-q9MNMaPN3nQjp3y0gp6loAlg"
+
+interface Update {
+  status: "COMPLETE" | "PENDING" | "FAILED";
+  update: any;
+}
+
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NjcwNDYwMSwianRpIjoiOWY2NzRjZWQtZDgyNi00ZTFmLTgwNTYtNjEyMDg3NWE0MTExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc0NjcwNDYwMSwiY3NyZiI6IjMwMThhYTdjLTBlNDItNDg1MC1hNTMzLTllOGQ5MzQxNGFjYSIsImV4cCI6MTc1NTcwNDYwMSwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.asewhiLTXz32HgRurF-q9MNMaPN3nQjp3y0gp6loAlg"
+// let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MDA4MzE2MiwianRpIjoiZGM5YzlkZDctZGM2NC00MzBiLTgxMmYtYTYwOWEzZmVjNTZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc1MDA4MzE2MiwiY3NyZiI6ImRiYTE4OGEzLTkzNGQtNGRmMC05ZWQzLTE2NDJkYzAyY2ZmZCIsImV4cCI6MTc1OTA4MzE2MiwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.Sm50m91oV7HEkbEWMTJ2sxpYKL3ljBz2o3HAINCw8IQ"
+let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MDA4MzE2MiwianRpIjoiZGM5YzlkZDctZGM2NC00MzBiLTgxMmYtYTYwOWEzZmVjNTZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc1MDA4MzE2MiwiY3NyZiI6ImRiYTE4OGEzLTkzNGQtNGRmMC05ZWQzLTE2NDJkYzAyY2ZmZCIsImV4cCI6MTc1OTA4MzE2MiwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.Sm50m91oV7HEkbEWMTJ2sxpYKL3ljBz2o3HAINCw8IQ"
 
 export function AnnotationC() {
 
   const AnnotationDataProvider = AnnotationDataContext.Provider;
-  const annotation: Annotation = useLoaderData();
+  const data: Annotation = useLoaderData();
+    // const data: Annotation = useLoaderData<typeof loader>();
+  const [annotation, setAnnotation] = useState(data);
+
   
   const navigate = useNavigate();
   const location = useLocation();
+  let fetcher = useFetcher();
+  const ws = useRef<Socket | null>(null);
+  // const ws = useRef<Socket>();
 
   // Get base path dynamically
   const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
   const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
 
+  useEffect(() => {
+    console.log({data})
+    setAnnotation(data);
+  }, [data]);
+
+    async function handleUpdates(update: Update) {
+      console.log("handling updates ", update)
+    if (update.update.graph) {
+      // return await fetcher.load(`/annotation/${annotation.annotation_id}`);
+      const headers = { Authorization: `Bearer ${token}` };
+      const res = await annotationAPI
+      .get(`annotation/${annotation.annotation_id}`, { headers })
+      .json();
+      console.log({annotation2:res})
+      setAnnotation(res)
+      return res;
+      
+    }
+    // return fetcher.load(`${basePath}/annotation/${annotation.annotation_id}/results`);
+    if (update.status === "COMPLETE" || update.status === "FAILED")
+      console.log({us:update.status})
+      ws.current?.close();
+    setAnnotation((a) => ({ ...a, ...update.update, status: update.status }));
+  }
+
+  useEffect(() => {
+    if (data.status !== "PENDING") return;
+    ws.current = io("ws://100.67.47.42:5500/");
+    ws.current.on("connect", () => {
+      ws.current!.emit("join", { room: data.annotation_id });
+    });
+    ws.current.on("update", handleUpdates);
+  }, [data]);
+
+
   return (
     <>
     <ReactFlowProvider>
       <AnnotationDataProvider value={annotation}>
-            <div className="h-full w-full">
+        <div className="h-full w-full">
         <div className="flex h-screen flex-col">
           <header className="flex items-center justify-between px-12 pt-4">
             <h1 className="red text-xl font-bold">

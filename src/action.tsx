@@ -24,6 +24,7 @@ export interface Annotation {
       data: { id: string; label: string; source: string; target: string };
     }[];
     request: AnnotationRequest;
+    status: "PENDING" | "FAILED" | "COMPLETE";
   }
 
   export interface AnnotationRequest {
@@ -42,73 +43,74 @@ export interface Annotation {
     }[];
   }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NjcwNDYwMSwianRpIjoiOWY2NzRjZWQtZDgyNi00ZTFmLTgwNTYtNjEyMDg3NWE0MTExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc0NjcwNDYwMSwiY3NyZiI6IjMwMThhYTdjLTBlNDItNDg1MC1hNTMzLTllOGQ5MzQxNGFjYSIsImV4cCI6MTc1NTcwNDYwMSwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.asewhiLTXz32HgRurF-q9MNMaPN3nQjp3y0gp6loAlg"
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NjcwNDYwMSwianRpIjoiOWY2NzRjZWQtZDgyNi00ZTFmLTgwNTYtNjEyMDg3NWE0MTExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc0NjcwNDYwMSwiY3NyZiI6IjMwMThhYTdjLTBlNDItNDg1MC1hNTMzLTllOGQ5MzQxNGFjYSIsImV4cCI6MTc1NTcwNDYwMSwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.asewhiLTXz32HgRurF-q9MNMaPN3nQjp3y0gp6loAlg"
+let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MDA4MzE2MiwianRpIjoiZGM5YzlkZDctZGM2NC00MzBiLTgxMmYtYTYwOWEzZmVjNTZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc1MDA4MzE2MiwiY3NyZiI6ImRiYTE4OGEzLTkzNGQtNGRmMC05ZWQzLTE2NDJkYzAyY2ZmZCIsImV4cCI6MTc1OTA4MzE2MiwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.Sm50m91oV7HEkbEWMTJ2sxpYKL3ljBz2o3HAINCw8IQ"
 
-export function useRunQuery (id?: string) {
-    const navigate = useNavigate();
-    const user = useContext(UserDataContext);
-    const [busy, setBusy] = useState<boolean>(false);
-    // const { toast } = useToast();
-    for (const char of token) {
-      if (char.charCodeAt(0) > 255) {
-        console.log('Non-ISO-8859-1 character found:', char);
-      }
-    }
-    const runQuery = async (graph: any) => {
-      setBusy(true);
-      const requestJSON = {
-        requests: {
-          nodes: graph.nodes.map((n: any) => {
-            return {
-              node_id: "a" + n.id.replaceAll("-", ""),
-              id: n.data.id || "",
-              type: n.data.type,
-              properties: Object.keys(n.data)
-                .filter(
-                  (k) => !["id", "type", "animate"].includes(k) && n.data[k],
-                )
-                .reduce((acc, k) => ({ ...acc, [k]: n.data[k] }), {}),
-            };
-          }),
-          predicates: graph.edges.map((e: any) => {
-            return {
-              id: e.id,
-              type: e.data.edgeType,
-              source: "a" + e.source.replaceAll("-", ""),
-              target: "a" + e.target.replaceAll("-", ""),
-            };
-          }),
-        },
-      };
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      };
-      try {
-        console.log({headers})
-        const { annotation_id }: Annotation = await annotationAPI
-          .post("query?limit=100", {
-            headers,
-            body: JSON.stringify(requestJSON),
-          })
-          .json();
-          console.log({annotation_id})
-          // annotation_id = `681f579bf8abe0ad25fa5baf`
-          navigate(`annotation/${annotation_id}/results`);
-      } catch (e: any) {
-        console.error(e);
-        alert(`${e.response?.statusText}: ${e.response?.data}`);
-        // toast({
-        //   title: e.response.statusText,
-        //   variant: "destructive",
-        // });
-      } finally {
-        setBusy(false);
-      }
-    };
+// export function useRunQuery (id?: string) {
+//     const navigate = useNavigate();
+//     const user = useContext(UserDataContext);
+//     const [busy, setBusy] = useState<boolean>(false);
+//     // const { toast } = useToast();
+//     for (const char of token) {
+//       if (char.charCodeAt(0) > 255) {
+//         console.log('Non-ISO-8859-1 character found:', char);
+//       }
+//     }
+//     const runQuery = async (graph: any) => {
+//       setBusy(true);
+//       const requestJSON = {
+//         requests: {
+//           nodes: graph.nodes.map((n: any) => {
+//             return {
+//               node_id: "a" + n.id.replaceAll("-", ""),
+//               id: n.data.id || "",
+//               type: n.data.type,
+//               properties: Object.keys(n.data)
+//                 .filter(
+//                   (k) => !["id", "type", "animate"].includes(k) && n.data[k],
+//                 )
+//                 .reduce((acc, k) => ({ ...acc, [k]: n.data[k] }), {}),
+//             };
+//           }),
+//           predicates: graph.edges.map((e: any) => {
+//             return {
+//               id: e.id,
+//               type: e.data.edgeType,
+//               source: "a" + e.source.replaceAll("-", ""),
+//               target: "a" + e.target.replaceAll("-", ""),
+//             };
+//           }),
+//         },
+//       };
+//       const headers = {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       };
+//       try {
+//         // console.log({headers})
+//         const { annotation_id }: Annotation = await annotationAPI
+//           .post("query?limit=100", {
+//             headers,
+//             body: JSON.stringify(requestJSON),
+//           })
+//           .json();
+//           console.log({annotation_id})
+//           // annotation_id = `681f579bf8abe0ad25fa5baf`
+//           navigate(`annotation/${annotation_id}/results`);
+//       } catch (e: any) {
+//         console.error(e);
+//         alert(`${e.response?.statusText}: ${e.response?.data}`);
+//         // toast({
+//         //   title: e.response.statusText,
+//         //   variant: "destructive",
+//         // });
+//       } finally {
+//         setBusy(false);
+//       }
+//     };
   
-    return { runQuery, busy };
-  };
+//     return { runQuery, busy };
+//   };
   
   export const AnnotationContextMenu = ({ annotation }: { annotation: any }) => {
   const [deleteDialogOpened, toggleDeleteDialog] = useState(false);
