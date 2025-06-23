@@ -18,6 +18,10 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built files to nginx html folder
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
+# Add startup script
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
 EXPOSE 4173
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh /startup.sh"]
