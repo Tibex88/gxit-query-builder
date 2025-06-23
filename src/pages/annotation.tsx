@@ -8,6 +8,95 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { io, Socket } from "socket.io-client";
 import { annotationAPI } from '../api';
 
+async function outputToGalaxy(title: string) {
+  const baseURL = `${location.protocol}//${location.hostname}:9094`;
+
+  // Step 1: Create a history
+  const createHistoryRes = await fetch(`${baseURL}/api/histories`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": "9c90d079b75a7fe31b65772445b1f29f",
+    },
+    body: JSON.stringify({
+      name: title || "Galaxy History from Rejuve",
+    }),
+  });
+
+  const history = await createHistoryRes.json();
+  const historyId = history.id;
+  console.log("✅ History created:", historyId);
+
+  await fetch(`${baseURL}/api/tools`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": "9c90d079b75a7fe31b65772445b1f29f",
+  },
+    body: JSON.stringify({
+      history_id: historyId,
+      tool_id: "upload1",
+      inputs: {
+        "files_0|type": "upload_contents",
+        "files_0|NAME": "my_output.txt",
+        "files_0|url_paste": "Hello from my interactive tool!",
+        "files_0|file_type": "txt"
+      }
+    })
+  });
+
+  // // Step 2: Launch the interactive tool
+  // const toolLaunchRes = await fetch(`${baseURL}/api/tools?tool_id=interactivetool_qb`, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     "x-api-key": "9c90d079b75a7fe31b65772445b1f29f",
+  //   },
+  //   body: JSON.stringify({
+  //     history_id: historyId,
+  //     tool_id: "interactivetool_qb",
+  //     inputs: {}  // No input is required to launch, outputs will be created automatically
+  //   }),
+  // });
+
+  // const result = await toolLaunchRes.json();
+  // console.log("🚀 Tool launched:", result);
+
+  // // Step 3: Get the output dataset ID
+  // const datasetId = result.outputs?.[0]?.id;
+  // if (!datasetId) {
+  //   throw new Error("❌ No dataset ID returned from tool launch.");
+  // }
+
+  // console.log("📄 Writing to dataset ID:", datasetId);
+
+  // // Step 4: Write content to the dataset
+  // const contentBlob = new Blob(["Hello from my interactive tool!"], { type: "text/plain" });
+  // const formData = new FormData();
+  // formData.append("file", contentBlob, "output.txt");
+
+  // const uploadRes = await fetch(`${baseURL}/api/histories/${historyId}/contents/${datasetId}/overwrite`, {
+  //   method: "PUT",
+  //   headers: {
+  //     "x-api-key": "9c90d079b75a7fe31b65772445b1f29f",
+  //   },
+  //   body: formData,
+  // });
+
+  // const uploadResult = await uploadRes.json();
+  // console.log("✅ Upload result:", uploadResult);
+}
+
+// async function outputToGalaxy(title: string) {
+//     const outputFilePath = process.env.OUTPUT_FILE_PATH;
+//     console.log("Output file path:", outputFilePath);
+//     if (!outputFilePath) return console.error({ error: 'No output file path defined' });
+//   fs.writeFile(outputFilePath, "req.body.content", (err) => {
+//     if (err) return console.error({ error: 'Failed to write file' });
+//     console.info({ status: 'ok' });
+//   });
+
+// }
 
 interface Update {
   status: "COMPLETE" | "PENDING" | "FAILED";
@@ -55,9 +144,10 @@ export function AnnotationC() {
       
     }
     // return fetcher.load(`${basePath}/annotation/${annotation.annotation_id}/results`);
-    if (update.status === "COMPLETE" || update.status === "FAILED")
+    if (update.status === "COMPLETE" || update.status === "FAILED") {
       console.log({us:update.status})
       ws.current?.close();
+    }
     setAnnotation((a) => ({ ...a, ...update.update, status: update.status }));
   }
 

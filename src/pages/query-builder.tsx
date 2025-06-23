@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classes  from '../config/style'
 import formFields from '../config/form'
 import { ReactFlowProvider } from "@xyflow/react";
@@ -11,6 +11,22 @@ import { QueryBuilder, QueryBuilderContext , Icon} from '@yisehak-awm/query-buil
 import { Outlet, useNavigation } from 'react-router-dom';
 
 export function QB() {
+
+  useEffect(() => {
+    const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
+    const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
+    console.log({basePath})
+  fetch(`${basePath}/api_token.txt`)
+    .then((res) => {
+      console.log({res})
+      return res.text()
+    })
+    .then((token) => {
+      console.log("Fetched token from container:", token);
+      // use token in app logic
+    });
+}, []);
+
   const navigation = useNavigation()
   const { runQuery, busy } = useRunQuery();
   const isRootPath = !location.pathname.includes("/annotation/");
