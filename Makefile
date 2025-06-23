@@ -1,10 +1,10 @@
-start:
-	npm run dev
-
 # Variables
 IMAGE_NAME = gxit-query-builder
 CONTAINER_NAME = GXITQB
 PORT = 4173
+DOCKER_USERNAME = tibex
+TAG = latest
+FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
 
 # Default target
 .PHONY: help
@@ -16,17 +16,20 @@ help:
 	@echo "  make stop        - Stop the running container"
 	@echo "  make clean       - Remove the image and container"
 
+start:
+	npm run dev
+
 # Build the Docker image
 build:
-	docker build --no-cache -t $(IMAGE_NAME) .
+	docker build --no-cache -t $(FULL_IMAGE_NAME) .
 
 # Run the container in foreground
 run:
-	docker run -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(FULL_IMAGE_NAME)
 
 # Run the container in detached mode
 dev:
-	docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(FULL_IMAGE_NAME)
 
 # Stop and remove the container
 stop:
@@ -35,10 +38,14 @@ stop:
 
 # Remove container and image
 clean: stop
-	docker rmi $(IMAGE_NAME) || true
+	docker rmi $(FULL_IMAGE_NAME) || true
+
+# Push the image to Docker Hub
+push: build
+	docker push $(FULL_IMAGE_NAME)
 
 # Open bash inside the running container
 bash:
 	docker exec -it $(CONTAINER_NAME) sh
 
-.PHONY: build run dev stop clean bash
+.PHONY: build run dev stop clean push bash
