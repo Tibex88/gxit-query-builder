@@ -54,7 +54,7 @@ const runQuery = async (graph: any) => {
     navigate(`${basePath}/annotation/${annotation_id}/results`);
   } catch (e: any) {
     console.error(e);
-    alert(`${e.response?.statusText}: ${e.response?.data}`);
+    alert(`Could not connect to the server`);
   } finally {
     setBusy(false);
   }

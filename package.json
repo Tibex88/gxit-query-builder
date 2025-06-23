@@ -28,6 +28,7 @@
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-elk": "^2.3.0",
     "cytoscape-node-html-label": "^1.2.2",
+    "@tanstack/react-table": "^8.21.2",
     "cytoscape-popper": "^4.0.1",
     "file-saver": "^2.0.5",
     "highcharts": "^12.2.0",
