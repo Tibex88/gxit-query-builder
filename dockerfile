@@ -9,19 +9,19 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# --------- Stage 2: Serve with Nginx ---------
-FROM nginx:alpine
+# --------- Stage 2: Serve with Node ---------
+FROM node:20.15.0-alpine
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /usr/src/app
 
-# Copy built files to nginx html folder
-COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+# Install dependencies
+COPY package.json package-lock.json ./
+RUN npm install
 
-# Add startup script
-COPY startup.sh /startup.sh
-RUN chmod +x /startup.sh
+# Copy React static files and server code
+COPY --from=builder /usr/src/app/dist ./dist
+COPY server.js ./
 
 EXPOSE 4173
 
-CMD ["sh /startup.sh"]
+CMD ["npm", "run", "start"]
