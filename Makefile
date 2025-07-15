@@ -5,6 +5,26 @@ PORT = 4173
 DOCKER_USERNAME = tibex
 TAG = 20250624-184132
 FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
+# DATETIME_TAG = $(shell date +%Y%m%d-%H%M%S)
+# TAG = $(DATETIME_TAG)
+# # TAG = latest
+# FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
+TAG_FILE := .tag
+
+define get_tag
+$(if $(wildcard $(TAG_FILE)),$(shell cat $(TAG_FILE)),$(shell date +%Y%m%d-%H%M%S))
+endef
+
+TAG := $(call get_tag)
+FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):20250701-143332
+# FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
+
+save-tag:
+	@echo $(TAG) > $(TAG_FILE)
+
+clean-tag:
+	rm -f $(TAG_FILE)
+
 
 # Default target
 .PHONY: help
