@@ -15,13 +15,12 @@ const runQuery = async (graph: any) => {
   const requestJSON = {
     requests: {
       nodes: graph.nodes.map((n: any) => (
-        console.log(n),
         {
         node_id: "a" + n.id.replaceAll("-", ""),
         id: n.data.id || "",
-        type: n.data.type,
+        type: n.data.qb_node_type,
         properties: Object.keys(n.data)
-          .filter((k) => !["id", "type", "animate"].includes(k) && n.data[k])
+          .filter((k) => !["id", "qb_node_type", "animate"].includes(k) && n.data[k])
           .reduce((acc, k) => ({ ...acc, [k]: n.data[k] }), {}),
       })),
       predicates: graph.edges.map((e: any) => ({
@@ -45,14 +44,14 @@ const runQuery = async (graph: any) => {
         body: JSON.stringify(requestJSON),
       })
       .json();
-      console.log(title,{title, annotation_id})
+      console.log("", title,{title, annotation_id})
     const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
     const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
     var history_id = segments[3]; // history ID 
     // outputToGalaxy(title || "Rejuve Query Output")
     navigate(`${basePath}/annotation/${annotation_id}/results`);
   } catch (e: any) {
-    console.error(e);
+    console.error("", e);
     alert(`Could not connect to the server`);
   } finally {
     setBusy(false);
