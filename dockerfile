@@ -21,7 +21,8 @@ RUN npm install
 # Copy React static files and server code
 COPY --from=builder /usr/src/app/dist ./dist
 COPY server.js ./
+COPY utils/ ./utils/
 
 EXPOSE 4173
 
-CMD ["npm", "run", "start"]
+CMD ["node", "/usr/src/app/server.js"]

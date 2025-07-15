@@ -39,6 +39,9 @@ export function Result () {
 
   useEffect(() => {
     if (location?.state?.reload) navigate(".", { state: { reload: false } });
+    console.log({annotation})
+    // writeToOutput(annotation.result)
+    // writeToOutput({"key":"value"})
   }, []);
 
 
@@ -48,7 +51,6 @@ export function Result () {
 
   const totalNonParentNodeCount = useMemo(
     () =>{
-      console.log({annotation})
       annotation?.request?.nodes.filter((n: any) => n.type !== "parent").length ||
       0},
     [annotation],
@@ -69,7 +71,7 @@ export function Result () {
     // sendPrompt(n)
   console.log("send prompt")
   , []
-);
+  );
 
   if (typeof window === "undefined") return <></>;
 
