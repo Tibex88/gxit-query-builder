@@ -9,21 +9,21 @@ FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
 # TAG = $(DATETIME_TAG)
 # # TAG = latest
 # FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
-TAG_FILE := .tag
+# TAG_FILE := .tag
 
-define get_tag
-$(if $(wildcard $(TAG_FILE)),$(shell cat $(TAG_FILE)),$(shell date +%Y%m%d-%H%M%S))
-endef
+# define get_tag
+# $(if $(wildcard $(TAG_FILE)),$(shell cat $(TAG_FILE)),$(shell date +%Y%m%d-%H%M%S))
+# endef
 
-TAG := $(call get_tag)
-FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):20250701-143332
+# TAG := $(call get_tag)
+# FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):20250701-143332
 # FULL_IMAGE_NAME = $(DOCKER_USERNAME)/$(IMAGE_NAME):$(TAG)
 
-save-tag:
-	@echo $(TAG) > $(TAG_FILE)
+# save-tag:
+# 	@echo $(TAG) > $(TAG_FILE)
 
-clean-tag:
-	rm -f $(TAG_FILE)
+# clean-tag:
+# 	rm -f $(TAG_FILE)
 
 
 # Default target
