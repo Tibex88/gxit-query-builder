@@ -6,8 +6,6 @@ import { fileURLToPath } from 'url';
 import { argv } from 'process';
 import axios from 'axios';
 import yauzl from 'yauzl'; // for reading ZIP files
-import AdmZip from 'adm-zip';
-const TEMP_ZIP_PATH = path.join('./', 'downloaded.zip'); // adjust path as needed
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +17,6 @@ const PORT = process.env.PORT || 4173;
 const staticPath = path.join(__dirname, 'dist');
 const BASE_PREFIX = '/interactivetool/ep/:token/:job_id';
 
-// const outputArgIndex = argv.indexOf('--output');
 const output1Index = argv.indexOf('--output');
 const output2Index = argv.indexOf('--output2');
 
@@ -32,10 +29,6 @@ if (output1Index !== -1 && argv.length > output1Index + 1) {
 if (output2Index !== -1 && argv.length > output2Index + 1) {
   galaxyOutputPaths[1] = argv[output2Index + 1];
 }
-
-// if (outputArgIndex !== -1 && argv.length > outputArgIndex + 1) {
-//   galaxyOutputPath = argv[outputArgIndex + 1];
-// }
 
 // Serve static files from React's dist folder
 app.use(express.static(staticPath));
@@ -60,7 +53,6 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
       headers: {
         'Authorization': token,   // example header, customize as needed
         'Accept': 'text/tab-separated-values',      // example header
-        // add other headers here if needed
       }
     }).then(res => {
     const buffer = Buffer.from(res.data);
@@ -79,7 +71,7 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
 
         const outputPath = galaxyOutputPaths[fileIndex];
         if (!outputPath) {
-          console.error(`No output path specified for file ${fileIndex} - server.js:82`);
+          console.error(`No output path specified for file ${fileIndex} - server.js:74`);
           zipfile.readEntry();
           return;
         }
@@ -91,7 +83,7 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
           readStream.pipe(writeStream);
 
           writeStream.on('finish', () => {
-            console.log(`✅ Extracted ${entry.fileName} to ${outputPath} - server.js:94`);
+            console.log(`✅ Extracted ${entry.fileName} to ${outputPath} - server.js:86`);
             fileIndex++;
             zipfile.readEntry(); // Proceed to next file
           });
@@ -99,56 +91,13 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
       });
 
       zipfile.on('end', () => {
-        console.log('✅ All entries processed - server.js:102');
+        console.log('✅ All entries processed - server.js:94');
       });
     });
   })
   .catch(err => {
-    console.error('❌ Failed to download or extract: - server.js:107', err.message);
+    console.error('❌ Failed to download or extract: - server.js:99', err.message);
   });
-
-    // const fileStream = fs.createWriteStream(galaxyOutputPath);
-    // const fileStream = fs.createWriteStream(TEMP_ZIP_PATH);
-    // await new Promise((resolve, reject) => {
-    // response.data.pipe(fileStream);
-    // response.data.on('error', reject);
-    // fileStream.on('finish', resolve);
-  // });
-
-    // Extract the ZIP
-  // const zip = new AdmZip(response.data);
-  // const zipEntries = zip.getEntries();
-  // let fileIndex = 0;
-
-  //   for (const entry of zipEntries) {
-  //     console.log({entry: entry.entryName});
-  //   if (entry.entryName.endsWith('.tsv') && fileIndex < 2) {
-  //     const tsvContent = zip.readAsText(entry);
-  //     // if (galaxyOutputPaths[fileIndex]) {
-  //       // fs.writeFileSync(galaxyOutputPaths[fileIndex], tsvContent, 'utf8');
-  //       // fs.writeFileSync(TEMP_ZIP_PATH, tsvContent, 'utf8');
-  //       const file = path.join('./', `${entry.entryName}`)
-  //       console.log({file})
-  //       fs.writeFileSync(file, tsvContent, 'utf8');
-  //       console.log(`✅ Wrote ${entry.entryName} to ${galaxyOutputPaths[fileIndex]} - server.js:89`);
-  //     // }
-  //     fileIndex++;
-  //   }
-  // }
-  // for (const entry of zipEntries) {
-  //   if (entry.entryName.endsWith('.tsv')) {
-  //     const tsvContent = zip.readAsText(entry);
-  //     console.log({entry: entry.entryName});
-  //     const rows = tsvContent.trim().split('\n').map(line => line.split('\t'));
-  //     const headers = rows[0];
-  //     const data = rows.slice(1).map(row =>
-  //       Object.fromEntries(row.map((val, i) => [headers[i], val]))
-  //     );
-
-  //     // console.log(`📄 Contents of ${entry.entryName}: - server.js:77`);
-  //     // console.table(data);
-  //   }
-  // }
 
   res.status(200).json({ message: 'TSV files extracted and logged' });
   } catch (err) {
