@@ -11,11 +11,11 @@ import { annotationAPI } from '../api';
 function writeToOutput(content) {
   const pathParts = window.location.pathname.split('/');
   const BASE_PATH = ['','interactivetool','ep', pathParts[3], pathParts[4]].join('/');
-
+  const { annotation_id } = content;
   fetch(`${BASE_PATH}/save`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ content }),
+     body: JSON.stringify({content: (annotation_id).toString() }),
   })
     .then(res => res.json())
     .then(data => {
@@ -74,7 +74,7 @@ export function AnnotationC() {
     }
     // return fetcher.load(`${basePath}/annotation/${annotation.annotation_id}/results`);
     if (update.status === "COMPLETE" || update.status === "FAILED") {
-      console.log({us:update.status})
+      console.log({updateStatus:update.status})
       ws.current?.close();
     }
     setAnnotation((a) => ({ ...a, ...update.update, status: update.status }));

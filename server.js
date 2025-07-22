@@ -4,44 +4,7 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { argv } from 'process';
-// import to_table from './utils/to_table.js';
-
-function to_table(content) {
-
-  const rows = [];
-  
-  // Headers
-  rows.push(['ID', 'Type', 'Chr', 'Start', 'End', 'Genes'].join('\t'));
-
-  content.nodes.forEach(group => {
-    if (!group.data || !Array.isArray(group.data.nodes)) return;
-
-    group.data.nodes.forEach(node => {
-      const id = node.id || '';
-      const type = node.type || '';
-      const chr = node.chr || '';
-      const start = node.start || '';
-      const end = node.end || '';
-
-      // Handle genes array whether it's a string or an actual array
-      let genes = node.genes;
-      if (typeof genes === 'string') {
-        try {
-          genes = JSON.parse(genes);
-        } catch {
-          genes = [genes]; // fallback
-        }
-      }
-      const genesStr = Array.isArray(genes) ? genes.join(', ') : genes;
-
-      rows.push([id, type, chr, start, end, genesStr].join('\t'));
-    });
-  });
-
-  const tsvOutput = rows.join('\n');
-  return tsvOutput;
-}
-
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,27 +25,41 @@ if (outputArgIndex !== -1 && argv.length > outputArgIndex + 1) {
 
 // Serve static files from React's dist folder
 app.use(express.static(staticPath));
+// Middleware to parse JSON
+app.use(express.json());
 
 // Handle saving data to a file
 app.use(bodyParser.json({ limit: '100mb' }));
 
-app.post(`${BASE_PREFIX}/save`, (req, res) => {
+app.post(`${BASE_PREFIX}/save`, async (req, res) => {
   try {
-  let { content } = req.body;
+    let { content } = req.body;
+    if (!content) {
+      return res.status(400).json({ message: 'Missing content field' });
+    } 
+    const downloadUrl = `http://100.67.47.42:5500/annotation/${content}/download-tsv`;
 
-  const tsvOutput = to_table(content);
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MDA4MzE2MiwianRpIjoiZGM5YzlkZDctZGM2NC00MzBiLTgxMmYtYTYwOWEzZmVjNTZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc1MDA4MzE2MiwiY3NyZiI6ImRiYTE4OGEzLTkzNGQtNGRmMC05ZWQzLTE2NDJkYzAyY2ZmZCIsImV4cCI6MTc1OTA4MzE2MiwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.Sm50m91oV7HEkbEWMTJ2sxpYKL3ljBz2o3HAINCw8IQ"
 
-  fs.writeFile(galaxyOutputPath, tsvOutput, err => {
-    if (err) {
-      console.error('Failed to save file:', err);
-      return res.status(500).json({ message: 'Failed to save file' });
-    }
-    res.json({ message: 'Output to file scuccessful' });
+    const response = await axios.get(downloadUrl, {
+      responseType: 'stream',
+      headers: {
+        'Authorization': token,   // example header, customize as needed
+        'Accept': 'text/tab-separated-values',      // example header
+        // add other headers here if needed
+      }
+    });
+    const fileStream = fs.createWriteStream(galaxyOutputPath);
+    await new Promise((resolve, reject) => {
+    response.data.pipe(fileStream);
+    response.data.on('error', reject);
+    fileStream.on('finish', resolve);
   });
   } catch (err) {
     res.status(500).json({ message: 'Internal error', error: err.message });
   }
-});
+})
+
 
 // Fallback: same as app.get('', (req, res) and returns index.html for any unknown routes (SPA support)
 app.use((req, res) => {
