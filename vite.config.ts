@@ -9,8 +9,13 @@ export default defineConfig({
     react(),
     viteSingleFile(),
     tailwindcss()
-],
-  base: '/interactivetool/ep/',
+  ],
+    base: '/interactivetool/ep/',
+    preview: {
+    host: true,
+    port: 4173,
+    allowedHosts: ['dl.tail9c350.ts.net','100.67.47.42'],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
