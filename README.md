@@ -1,12 +1,20 @@
-# React + Vite
+# BioAtomspace Graph Query Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a query builder for biological data that connects to the annotation service developed by Rejuve.bio. It enables users to construct and execute queries against a BioAtomspace, with both queries and responses visualized as interactive graphs.
 
-Currently, two official plugins are available:
+The interactive tool is deployed on the Galaxy Tool Shed repository and can be installed directly from there for use within Galaxy workflows.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Connects to Rejuve.bio's annotation service
+- Queries BioAtomspace for biological data
+- Visual graph-based query construction and response visualization
+- Easy installation via Galaxy Tool Shed
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Installation
+
+To install, visit the Galaxy Tool Shed and search for "rejuve_visual_query_builder". And install it onto your instance.
+
+## Usage
+
+Once installed, you can use the interactive tool within Galaxy to build queries, visualize biological relationships, and interact with BioAtomspace data through the Rejuve.bio annotation
