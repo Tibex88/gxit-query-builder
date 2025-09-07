@@ -65,7 +65,6 @@ export function Param () {
       edges={edges}
       // This indicate wether the provided query was already run and has results
       // This affects the label of the "Run query" button
-      
       previouslyRun={true}
     />
         </QueryBuilderContext.Provider>

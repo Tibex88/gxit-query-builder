@@ -8,26 +8,6 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { io, Socket } from "socket.io-client";
 import { annotationAPI } from '../api';
 
-function writeToOutput(content) {
-  const pathParts = window.location.pathname.split('/');
-  const BASE_PATH = ['','interactivetool','ep', pathParts[3], pathParts[4]].join('/');
-  const { annotation_id } = content;
-  fetch(`${BASE_PATH}/save`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({content: (annotation_id).toString() }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      // console.log({dm:data.message, de:data.error ? data.error : ''})
-      console.count('Write to output called');
-      alert(data.message);
-    })
-    .catch(err => {
-      alert('Write failed');
-      return console.error('Write failed', err)
-    });
-}
 
 interface Update {
   status: "COMPLETE" | "PENDING" | "FAILED";
@@ -66,15 +46,11 @@ export function AnnotationC() {
         .get(`annotation/${annotation.annotation_id}`, { headers })
         .json();
         console.log({annotation2:res})
-        // writeToOutput(res)
-        // await fetcher.load(`/annotation/${annotation.annotation_id}`);
         setAnnotation(res)
         navigate(`${basePath}/annotation/${annotation.annotation_id}/results`);
-          // navigate(`/interactivetool/ep/${id1}/${id2}/annotation/${annotation.annotation_id}`, { replace: true });
       return res;
       
     }
-    // return fetcher.load(`${basePath}/annotation/${annotation.annotation_id}/results`);
     if (update.status === "COMPLETE" || update.status === "FAILED") {
       console.log({updateStatus:update.status})
       ws.current?.close();

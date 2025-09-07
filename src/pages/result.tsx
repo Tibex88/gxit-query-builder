@@ -33,15 +33,11 @@ export function Result () {
   const [cont, setCont] = useState<HTMLElement | null>(null);
   const [filters, setFilteredTerms] = useState<string[]>([]);
   const annotation = useContext(AnnotationDataContext);
-  // const { sendPrompt } = useContext(ChatContext);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (location?.state?.reload) navigate(".", { state: { reload: false } });
-    console.log({annotation})
-    // writeToOutput(annotation.result)
-    // writeToOutput({"key":"value"})
   }, []);
 
 
@@ -130,23 +126,7 @@ export function Result () {
         onExplainNode={onExplainNode}
         filters={filters}
       >
-        {/* <ResultSummary
-          wrapper={cont}
-          summary={annotation.summary}
-          nodeTypeCounts={annotation?.node_count_by_label}
-          edgeTypeCounts={annotation?.edge_count_by_label}
-        /> */}
       </AnnotationResultGraph>
-      {/* <Legend
-        filters={filters}
-        onFilterToggle={onFilterChange}
-        nodeTypeCounts={annotation.node_count_by_label}
-        edgeTypeCounts={annotation.edge_count_by_label}
-        totalEdgeCount={annotation.edge_count}
-        totalNodeCount={annotation.node_count}
-        totalNonParentNodeCount={totalNonParentNodeCount}
-      />
-      {/* {annotation && <Chat />} */}
     </>
   );
 };

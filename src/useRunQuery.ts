@@ -1,11 +1,9 @@
-import { useContext, useState } from "react";
-import { replace, useNavigate } from "react-router-dom";
-import { UserDataContext } from "./context";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { annotationAPI } from "./api";
 
 export function useRunQuery(id?: string) {
   const navigate = useNavigate();
-  const user = useContext(UserDataContext);
   const [busy, setBusy] = useState(false);
 
 let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MDA4MzE2MiwianRpIjoiZGM5YzlkZDctZGM2NC00MzBiLTgxMmYtYTYwOWEzZmVjNTZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTEsIm5iZiI6MTc1MDA4MzE2MiwiY3NyZiI6ImRiYTE4OGEzLTkzNGQtNGRmMC05ZWQzLTE2NDJkYzAyY2ZmZCIsImV4cCI6MTc1OTA4MzE2MiwidXNlcl9pZCI6MTEsImVtYWlsIjoidGliZXNvbG9tb243QGdtYWlsLmNvbSJ9.Sm50m91oV7HEkbEWMTJ2sxpYKL3ljBz2o3HAINCw8IQ"
