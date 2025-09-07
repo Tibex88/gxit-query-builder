@@ -10,16 +10,7 @@ import { DataTableColumnHeader } from "../data-table/column-header";
 
 import { Input } from "@/components/ui/input";
 import { useDataTable } from "../data-table/index";
-// import { sendPrompt } from "../chat/send-prompt";
-// const LAYOUT = {
-//   name: "elk",
-//   nodeDimensionsIncludeLabels: true,
-//   elk: {
-//     algorithm: "layered",
-//     "spacing.nodeNodeBetweenLayers": 400,
-//     "spacing.componentComponent": 300,
-//   },
-// };
+
 
 const LAYOUT = {
   name: "dagre",

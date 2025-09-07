@@ -60,15 +60,17 @@ export function AnnotationC() {
 
     async function handleUpdates(update: Update) {
       console.log("handling updates ", update)
-    if (update.update.graph) {
-      // return await fetcher.load(`/annotation/${annotation.annotation_id}`);
-      const headers = { Authorization: `Bearer ${token}` };
-      const res = await annotationAPI
-      .get(`annotation/${annotation.annotation_id}`, { headers })
-      .json();
-      console.log({annotation2:res})
-      writeToOutput(res)
-      setAnnotation(res)
+      if (update.update.graph) {
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await annotationAPI
+        .get(`annotation/${annotation.annotation_id}`, { headers })
+        .json();
+        console.log({annotation2:res})
+        // writeToOutput(res)
+        // await fetcher.load(`/annotation/${annotation.annotation_id}`);
+        setAnnotation(res)
+        navigate(`${basePath}/annotation/${annotation.annotation_id}/results`);
+          // navigate(`/interactivetool/ep/${id1}/${id2}/annotation/${annotation.annotation_id}`, { replace: true });
       return res;
       
     }

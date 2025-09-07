@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { UserDataContext } from "./context";
 import { annotationAPI } from "./api";
 
@@ -14,6 +14,7 @@ const runQuery = async (graph: any) => {
   setBusy(true);
   const requestJSON = {
     requests: {
+      annotation_id: id,
       nodes: graph.nodes.map((n: any) => (
         {
         node_id: "a" + n.id.replaceAll("-", ""),
@@ -39,17 +40,21 @@ const runQuery = async (graph: any) => {
 
   try {
     const { annotation_id , title } = await annotationAPI
-      .post("query", {
-        headers,
-        body: JSON.stringify(requestJSON),
-      })
-      .json();
+    .post("query", {
+      headers,
+      body: JSON.stringify(requestJSON),
+    })
+    .json();
+    // console.log({annotation_id})
       console.log("", title,{title, annotation_id})
     const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
     const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
     var history_id = segments[3]; // history ID 
     // outputToGalaxy(title || "Rejuve Query Output")
-    navigate(`${basePath}/annotation/${annotation_id}/results`);
+    navigate(`${basePath}/annotation/${annotation_id}/results`, {
+        // state: { reload: Date.now() },
+        replace: true,
+    });
   } catch (e: any) {
     console.error("", e);
     alert(`Could not connect to the server`);
