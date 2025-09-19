@@ -55,7 +55,6 @@ export function Result () {
   const onFilterChange = useCallback(
     (item: string) =>
       setFilteredTerms((items) => {
-      console.log({items})
         return items.includes(item)
           ? items.filter((i) => i !== item)
           : [...items, item];
@@ -63,11 +62,6 @@ export function Result () {
     [],
   );
 
-  const onExplainNode = useCallback((n: string) => 
-    // sendPrompt(n)
-  console.log("send prompt")
-  , []
-  );
 
   if (typeof window === "undefined") return <></>;
 
@@ -123,7 +117,7 @@ export function Result () {
         data={{
           elements: { nodes: annotation.nodes, edges: annotation.edges },
         }}
-        onExplainNode={onExplainNode}
+        onExplainNode={()=>{}}
         filters={filters}
       >
       </AnnotationResultGraph>

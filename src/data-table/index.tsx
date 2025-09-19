@@ -57,7 +57,6 @@ function DataTable<T>({
   table: TableType<T>;
   renderRow?: (row: Row<T>) => ReactNode;
 }) {
-  console.log({row})
   return (
     <Table className="mb-4 w-auto rounded-md border">
       <TableHeader>

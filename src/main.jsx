@@ -29,17 +29,14 @@ const router = createBrowserRouter([
         // errorElement: <ErrorFallBack />,
         loader: async ({ request, params }) => {
           const url = new URL(request.url);
-          console.log({url})
 
           if (url.pathname.includes(`/annotation/${params.id}`)) {
-            console.log("includes ," )
           }
 
           const headers = { Authorization: `Bearer ${token}` };
           const annotation = await annotationAPI
           .get(`annotation/${params.id}`, { headers })
           .json();
-          console.log({annotation2:annotation})
           return annotation;
         },
         children: [

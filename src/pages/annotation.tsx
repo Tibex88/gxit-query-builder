@@ -34,25 +34,21 @@ export function AnnotationC() {
   const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
 
   useEffect(() => {
-    console.log({data})
     setAnnotation(data)
   }, [data]);
 
     async function handleUpdates(update: Update) {
-      console.log("handling updates ", update)
       if (update.update.graph) {
         const headers = { Authorization: `Bearer ${token}` };
         const res = await annotationAPI
         .get(`annotation/${annotation.annotation_id}`, { headers })
         .json();
-        console.log({annotation2:res})
         setAnnotation(res)
         navigate(`${basePath}/annotation/${annotation.annotation_id}/results`);
       return res;
       
     }
     if (update.status === "COMPLETE" || update.status === "FAILED") {
-      console.log({updateStatus:update.status})
       ws.current?.close();
     }
     setAnnotation((a) => ({ ...a, ...update.update, status: update.status }));

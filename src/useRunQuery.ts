@@ -42,9 +42,7 @@ const runQuery = async (graph: any) => {
       headers,
       body: JSON.stringify(requestJSON),
     })
-    .json();
-    // console.log({annotation_id})
-      console.log("", title,{title, annotation_id})
+    .json();})
     const segments = location.pathname.split('/'); // ['', 'interactivetool', 'ep', 'uid', 'token', ...]
     const basePath = `/${segments.slice(1, 5).join('/')}`; // /interactivetool/ep/:uid/:token
     var history_id = segments[3]; // history ID 
@@ -54,7 +52,6 @@ const runQuery = async (graph: any) => {
         replace: true,
     });
   } catch (e: any) {
-    console.error("", e);
     alert(`Could not connect to the server`);
   } finally {
     setBusy(false);

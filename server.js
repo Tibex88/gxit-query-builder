@@ -71,7 +71,6 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
 
         const outputPath = galaxyOutputPaths[fileIndex];
         if (!outputPath) {
-          console.error(`No output path specified for file ${fileIndex} - server.js:74`);
           zipfile.readEntry();
           return;
         }
@@ -83,7 +82,6 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
           readStream.pipe(writeStream);
 
           writeStream.on('finish', () => {
-            console.log(`✅ Extracted ${entry.fileName} to ${outputPath} - server.js:86`);
             fileIndex++;
             zipfile.readEntry(); // Proceed to next file
           });
@@ -91,12 +89,11 @@ app.post(`${BASE_PREFIX}/save`, async (req, res) => {
       });
 
       zipfile.on('end', () => {
-        console.log('✅ All entries processed - server.js:94');
       });
     });
   })
   .catch(err => {
-    console.error('❌ Failed to download or extract: - server.js:99', err.message);
+    console.error('❌ Failed to download or extract: - server.js:96', err.message);
   });
 
   res.status(200).json({ message: 'TSV files extracted and logged' });

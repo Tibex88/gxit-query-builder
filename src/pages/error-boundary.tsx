@@ -1,5 +1,4 @@
 export function ErrorFallBack({ error, resetErrorBoundary }) {
-  console.log({error})
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="m-auto w-1/2">
